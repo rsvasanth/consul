@@ -586,6 +586,7 @@ describe "Users" do
 
   scenario "Re-send confirmation instructions" do
     create(:user, email: "manuela@consul.dev", confirmed_at: nil)
+    ActionMailer::Base.deliveries = []
 
     visit "/"
     click_link "Sign in"
@@ -597,9 +598,13 @@ describe "Users" do
     expect(page).to have_content "If your email address exists in our database, you will receive an "\
                                  "email with instructions for how to confirm your email address in a "\
                                  "few minutes."
+    expect(ActionMailer::Base.deliveries.count).to eq(1)
+    expect(ActionMailer::Base.deliveries.first.to).to eq(["manuela@consul.dev"])
+    expect(ActionMailer::Base.deliveries.first.subject).to eq("Confirmation instructions")
   end
 
   scenario "Re-send confirmation instructions with unexisting email" do
+    ActionMailer::Base.deliveries = []
     visit "/"
     click_link "Sign in"
     click_link "Haven't received instructions to activate your account?"
@@ -610,9 +615,12 @@ describe "Users" do
     expect(page).to have_content "If your email address exists in our database, you will receive an "\
                                  "email with instructions for how to confirm your email address in a "\
                                  "few minutes."
+    expect(ActionMailer::Base.deliveries.count).to eq(0)
   end
 
   scenario "Re-send confirmation instructions with already verified email" do
+    ActionMailer::Base.deliveries = []
+
     create(:user, email: "manuela@consul.dev")
 
     visit "/"
@@ -623,7 +631,12 @@ describe "Users" do
     fill_in "user_email", with: "manuela@consul.dev"
     click_button "Re-send instructions"
 
-    expect(page).to have_content "You have already confirmed your email account."
+    expect(page).to have_content "If your email address exists in our database, you will receive an "\
+                                 "email with instructions for how to confirm your email address in a "\
+                                 "few minutes."
+    expect(ActionMailer::Base.deliveries.count).to eq(1)
+    expect(ActionMailer::Base.deliveries.first.to).to eq(["manuela@consul.dev"])
+    expect(ActionMailer::Base.deliveries.first.subject).to eq("Your account is already confirmed")
   end
 
   scenario "Sign in, admin with password expired" do

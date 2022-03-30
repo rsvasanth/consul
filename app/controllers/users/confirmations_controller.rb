@@ -4,10 +4,8 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     yield resource if block_given?
 
-    if !resource.confirmation_required?
-      redirect_to new_user_confirmation_path,
-                  notice: t("devise.confirmations.user.already_confirmed")
-    elsif successfully_sent?(resource)
+    if successfully_sent?(resource)
+      Mailer.already_confirmed(resource).deliver_later if !resource.confirmation_required?
       respond_with({}, location: after_resending_confirmation_instructions_path_for(resource_name))
     else
       respond_with(resource)

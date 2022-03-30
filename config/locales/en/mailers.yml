@@ -2,6 +2,9 @@ en:
   mailers:
     title: "Open Government"
     no_reply: "This message was sent from an email address that does not accept replies."
+    already_confirmed:
+      new_password: "You can retrieve your password at the following link:"
+      subject: Your account is already confirmed
     comment:
       hi: Hi
       new_comment_by: There is a new comment from <strong>%{commenter}</strong>

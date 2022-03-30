@@ -2,6 +2,9 @@ es:
   mailers:
     title: "Gobierno abierto"
     no_reply: "Este mensaje se ha enviado desde una dirección de correo electrónico que no admite respuestas."
+    already_confirmed:
+      new_password: "Puedes recuperar tu contraseña en el siguiente enlace:"
+      subject: Tu cuenta ya está confirmada
     comment:
       hi: Hola
       new_comment_by: Hay un nuevo comentario de <strong>%{commenter}</strong> en
